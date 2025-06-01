@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>보노보노의 SNS</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="wrap-container main">
+        <div class="table-container">
+            <!-- 아이디 -->
+            <div class="text-container">
+                <h2>@i_am_bonobono</h2>
+            </div> 
+            <!-- 프로필사진, 게시물 수 등 -->
+            <div class="profile-container">
+                <img src="/img/img_5.jpg" alt="">
+                <table>
+                    <tr>
+                        <th>15</th>
+                        <th>15972</th>
+                        <th>1</th>
+                    </tr>
+                    <tr>
+                        <td>게시물</td>
+                        <td>팔로워</td>
+                        <td>팔로잉</td>
+                    </tr>
+                </table>
+            </div>
+            <!-- 이름, 소개문구 -->
+            <div class="text-container bio">
+                <strong>보노보노</strong>
+                <p>도망가고 싶은 보노보노</p>
+                <br>
+                <p>📕 보노보노처럼 살다니 다행이야</p>
+                <a href="https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=106500110">https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=106500110</a>
+                <p>📗 보노보노의 인생상담</p>
+                <a href="https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=137092815">https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=137092815</a>
+            </div> 
+            <!-- 이미지 -->
+        </div>
+        <ul class="post-list" id="post-list">
+            <li class="empty-post">게시물이 없습니다</li>
+        </ul>
+        <button onclick="location.href='write.html'" class="upload-button">+</button>        
+    </div>
+
+    <script>
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const $postList = $('#post-list');
+
+        // 기존 "게시물이 없습니다" 메시지 제거
+        if (posts.length > 0) {
+        $('.empty-post').remove();
+        }
+
+        // 최신순 정렬 후 게시물 추가
+        posts.slice().reverse().forEach(post => {
+        const $li = $('<li></li>');
+        const $link = $('<a></a>').attr('href', `detail.html?id=${post.id}`);
+        const $img = $('<img>').attr('src', post.image).attr('alt', '게시물 이미지');
+        $link.append($img);
+        $li.append($link);
+        $postList.append($li);
+        });
+    </script>
+
+</body>
+
+</html>

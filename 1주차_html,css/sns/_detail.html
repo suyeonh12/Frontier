@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>보노보노의 SNS</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="wrap-container detail">
+        <table class="table-container">
+            <!-- 프로필 사진, 아이디 -->
+            <tr>
+                <td>
+                    <a href="main.html">
+                        <div class="text-container">
+                            <img src="/img/img_5.jpg" alt="">
+                            <span>i_am_bonobono</span>
+                        </div> 
+                    </a>
+                </td>
+            </tr>
+            <!-- 상세 이미지 -->
+            <tr class="datail-img">
+                <td>
+                    <img src="/img/img_1.webp" alt="">
+                </td>
+            </tr>
+            <!-- 좋아요 버튼 -->
+            <tr>
+                <td>
+                    <button class="like-btn">🤍</button>
+                </td>
+            </tr>
+            <!-- 댓글 입력 -->
+            <tr>
+                <td>
+                    <div class="input-container">
+                        <input type="text">
+                        <button class="write-btn">입력</button>
+                    </div>
+                </td>
+            </tr>
+            <!-- 댓글 결과 -->
+            <tr>
+                <td>
+                    <div class="reply-container"></div>
+                </td>
+            </tr>   
+        </table>
+    </div>    
+
+    <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = Number(urlParams.get("id"));
+
+    const posts = JSON.parse(localStorage.getItem("posts")) || [];
+    const post = posts.find(p => p.id === postId);
+
+    if (post) {
+        // 이미지 렌더링
+        const imgTd = document.querySelector(".datail-img td");
+        imgTd.innerHTML = `<img src="${post.image}" alt="">`;
+
+        // 본문 내용 추가 (선택)
+        const contentRow = document.createElement("tr");
+        contentRow.innerHTML = `<td><p>${post.content}</p></td>`;
+        document.querySelector(".table-container").insertBefore(contentRow, imgTd.parentNode.nextSibling);
+    } else {
+        alert("게시물을 찾을 수 없습니다.");
+    }
+
+    // 댓글 데이터 가져오기 (없으면 빈 배열)
+    let comments = JSON.parse(localStorage.getItem(`comments_${postId}`)) || [];
+
+    function saveComments() {
+    localStorage.setItem(`comments_${postId}`, JSON.stringify(comments));
+    }
+
+    const replyContainer = document.querySelector(".reply-container");
+    const input = document.querySelector(".input-container input");
+    const writeBtn = document.querySelector(".write-btn");
+
+    // 댓글 목록 렌더링
+    function renderComments() {
+        replyContainer.innerHTML = "";
+        comments.forEach((comment) => {
+        const p = document.createElement("p");
+        p.setAttribute("data-id", comment.id);
+
+        const span = document.createElement("span");
+        span.textContent = comment.text;
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "수정";
+        editBtn.onclick = () => editComment(comment.id);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "삭제";
+        deleteBtn.onclick = () => deleteComment(comment.id);
+
+        p.appendChild(span);
+        p.appendChild(editBtn);
+        p.appendChild(deleteBtn);
+        replyContainer.appendChild(p);
+        });
+    }
+
+    // 댓글 작성
+    writeBtn.onclick = () => {
+    const text = input.value.trim();
+    if (!text) return;
+    comments.push({ id: Date.now(), text });
+    saveComments(); // 수정된 저장 함수 사용
+    input.value = "";
+    renderComments();
+    };
+
+    // 댓글 삭제
+    function deleteComment(id) {
+    comments = comments.filter(comment => comment.id !== id);
+    saveComments();
+    renderComments();
+    }
+
+    // 댓글 수정
+    function editComment(id) {
+    const comment = comments.find(c => c.id === id);
+    const p = document.querySelector(`p[data-id='${id}']`);
+    const inputEdit = document.createElement("input");
+    inputEdit.type = "text";
+    inputEdit.value = comment.text;
+
+    const saveBtn = document.createElement("button");
+    saveBtn.textContent = "저장";
+    saveBtn.onclick = () => {
+        comment.text = inputEdit.value;
+        saveComments();
+        renderComments();
+    };
+
+        // 수정 중인 부분 교체
+    p.innerHTML = "";
+    p.appendChild(inputEdit);
+    p.appendChild(saveBtn);
+    }
+
+    // 최초 렌더링
+    renderComments();
+    </script>
+
+</body>
+</html>

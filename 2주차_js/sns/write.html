@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>게시물 작성-보노보노의 SNS</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <div class="wrap-container write">
+      <div class="table-container">
+          <h3>게시물 작성</h3>
+          <form id="post-form">
+              <label for="image">이미지 선택</label>
+              <input type="file" id="image" accept="image/*" required />
+              <!-- 미리보기 썸네일 -->
+              <div class="preview-container"></div>
+              <label for="content">내용</label>
+              <textarea id="content" placeholder="내용을 입력하세요..." required></textarea>
+
+              <button type="submit" class="upload-submit">게시물 업로드</button>
+          </form>
+      </div>
+  </div>
+
+  <script>
+    // 이미지 미리보기
+    $('#image').on('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        $('.preview-container').html('<img id="preview" alt="미리보기 이미지" src="'+e.target.result+'"/>');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 게시물 저장
+    $('#post-form').on('submit', function(e) {
+      e.preventDefault();
+
+      const fileInput = $('#image')[0];
+      const content = $('#content').val().trim();
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('이미지를 선택해주세요.');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const imageDataUrl = event.target.result;
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const newId = posts.length ? Math.max(...posts.map(p => p.id)) + 1 : 1;
+
+        const newPost = {
+          id: newId,
+          image: imageDataUrl,
+          content: content,
+          createdAt: new Date().toISOString()
+        };
+
+        posts.push(newPost);
+
+        try {
+          localStorage.setItem('posts', JSON.stringify(posts));
+          alert('게시물이 저장되었습니다!');
+          location.href = 'main.html';
+        } catch (e) {
+          alert('저장 용량 초과입니다. 불필요한 게시물을 삭제하세요.');
+          console.error(e);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+a{
+    color: #000;
+    text-decoration: none;
+}
+.wrap-container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+.table-container{
+    background: #f7f7f7;
+}
+.img-li{
+    line-height: 0;
+}
+.img-li > div{
+    width: 33.33%;
+    cursor: pointer;
+}
+.img-li img{
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: .2s;
+}
+.img-li img:hover{
+    opacity: 0.5;
+}
+.profile-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 10px;
+}
+.profile-container img{
+    width: 30%;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    border: solid 1.5px #e0e0e0;
+    padding: 5px;
+}
+.profile-container table{
+    width: 50%;
+    text-align: center;
+}
+.profile-container td{
+    font-size: 94%;
+}
+.text-container{
+    padding: 1% 1% 2%;
+}
+.text-container.bio a{
+    text-decoration: underline;
+}
+.detail .text-container{
+    display: flex;
+    align-items: center;
+}
+.detail .text-container img{
+    width: 5%;
+    border-radius: 50%;
+    aspect-ratio: 1;
+}
+.detail .text-container span{
+    font-weight: bold;
+    margin-left: 1%;
+}
+.datail-img{
+    background: white;
+}
+.datail-img img{
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+button{
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.like-btn{
+    background-color: inherit;
+    font-size: 150%;
+    padding: 2px;
+}
+.write-btn, .remove-btn{
+    background-color: lightgray;
+    width: 48px;
+    flex: 0 0 auto; /*영역 줄거나 커져도 크기 유지*/
+    white-space: nowrap; /*띄어쓰기 안함*/
+    font-size: 80%;
+}
+.input-container{
+    display: flex;
+    gap: 4px;
+}
+input{
+    width: 100%;
+}
+.reply-container p{
+    margin: 4px 0 6px;
+}
+.reply-container .remove-btn{
+    font-size: 75%;
+}
+
+.upload-button{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
+    transform: translateX(calc(-25vw));
+    box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}

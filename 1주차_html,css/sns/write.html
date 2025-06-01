@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>게시물 작성</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="wrap-container write">
+        <h2>게시물 작성</h2>
+        <input type="file" id="imageInput" accept="image/*" /><br /><br />
+        <textarea id="content" placeholder="내용을 입력하세요"></textarea><br />
+        <button id="submitBtn">업로드</button>
+    </div>    
+
+    <script>
+        $('#submitBtn').click(function () {
+            const file = $('#imageInput')[0].files[0];
+            const content = $('#content').val();
+
+            if (!file || !content) return alert('이미지와 내용을 입력해주세요');
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const posts = JSON.parse(localStorage.getItem('posts')) || [];
+                const newPost = {
+                    id: Date.now(),
+                    image: e.target.result,
+                    content,
+                    comments: []
+                };
+                posts.unshift(newPost);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                location.href = 'main.html';
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+</body>
+</html>

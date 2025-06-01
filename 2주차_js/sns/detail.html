@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>보노보노의 SNS</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="wrap-container detail">
+        <div class="table-container">
+            <!-- 프로필 사진, 아이디 -->
+            <div class="detail-header">
+                <a href="main.html">
+                    <div class="text-container">
+                        <img src="/img/img_5.jpg" alt="">
+                        <span>i_am_bonobono</span>
+                    </div> 
+                </a>
+            </div>
+            <div id="post-detail">
+                <!-- 이미지 -->
+                <div class="img-wrap preview-container">
+                    <img class="post-image" src="" alt="게시물 이미지" />
+                    <button class="like-btn" data-liked="false">❤</button>
+                </div>
+                <!-- 내용 -->
+                <div class="content"></div>
+                <div class="created-time"></div>
+            </div>
+            <!-- 댓글 -->
+            <div class="comment-section">
+                <h3>댓글</h3>
+                <ul class="comment-list" id="comment-list"></ul>
+                <div class="input-container">
+                    <input type="text" id="comment-input" placeholder="댓글을 입력하세요..." />
+                    <button id="add-comment">댓글입력</button>
+                </div>
+            </div>  
+        </div>
+    </div> 
+
+    <script>
+    // URL 파라미터에서 id 추출
+    function getParameterByName(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+
+    const postId = parseInt(getParameterByName('id'));
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    let post = posts.find(p => p.id === postId);
+
+    if (!post) {
+        alert('존재하지 않는 게시물입니다.');
+        history.back();
+    } else {
+        // 게시물 정보 세팅
+        $('.post-image').attr('src', post.image || 'default.jpg');
+        $('.content').text(post.content || '');
+
+        // 시간 포맷 출력
+        const createdDate = new Date(post.createdAt);
+        const formatted = createdDate.toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+        });
+        $('.created-time').text(`${formatted}`);        
+    }
+
+    // 좋아요 토글
+    $('.like-btn').on('click', function () {
+        const btn = $(this);
+        const isLiked = btn.attr('data-liked') === 'true';
+
+        if (isLiked) {
+            btn.attr('data-liked', 'false').removeClass('liked');
+        } else {
+            btn.attr('data-liked', 'true').addClass('liked');
+        }
+    });
+
+    // 댓글 로드
+    function loadComments() {
+        const comments = JSON.parse(localStorage.getItem('comments_' + postId)) || [];
+        const commentList = $('#comment-list');
+        commentList.empty();
+
+        comments.forEach((c, i) => {
+            const li = $('<li></li>');
+
+            const textSpan = $('<span class="comment-text"></span>').text(c.text);
+            const editBtn = $('<button class="edit-btn cmt-btn">수정</button>');
+            const deleteBtn = $('<button class="delete-btn cmt-btn">삭제</button>');
+
+            editBtn.on('click', () => {
+                // 기존 요소 숨기기
+                textSpan.hide();
+                editBtn.hide();
+                deleteBtn.hide();
+
+                // 수정용 input과 저장/취소 버튼
+                const input = $('<input type="text" class="edit-input" />').val(c.text);
+                const saveBtn = $('<button class="save-btn cmt-btn">저장</button>');
+                const cancelBtn = $('<button class="cancel-btn cmt-btn">취소</button>');
+
+                saveBtn.on('click', () => {
+                    const newText = input.val().trim();
+                    if (newText) {
+                        comments[i].text = newText;
+                        localStorage.setItem('comments_' + postId, JSON.stringify(comments));
+                        loadComments();
+                    }
+                });
+
+                cancelBtn.on('click', () => {
+                    loadComments(); // 다시 로드해서 원래 UI 복원
+                });
+
+                li.append(input, saveBtn, cancelBtn);
+            });
+
+            deleteBtn.on('click', () => {
+                if (confirm('이 댓글을 삭제하시겠습니까?')) {
+                    comments.splice(i, 1);
+                    localStorage.setItem('comments_' + postId, JSON.stringify(comments));
+                    loadComments();
+                }
+            });
+
+            li.append(textSpan, ' ', editBtn, ' ', deleteBtn);
+            commentList.append(li);
+        });
+    }
+
+
+    // 댓글 저장
+    function saveComment(text) {
+        if (!text.trim()) return;
+        const comments = JSON.parse(localStorage.getItem('comments_' + postId)) || [];
+        comments.push({ text: text.trim(), createdAt: new Date().toISOString() });
+        localStorage.setItem('comments_' + postId, JSON.stringify(comments));
+    }
+
+    // 댓글 추가
+    $('#add-comment').on('click', () => {
+    const commentText = $('#comment-input').val();
+    if (!commentText.trim()) {
+        alert('댓글 내용을 입력하세요.');
+        return;
+    }
+    saveComment(commentText);
+    $('#comment-input').val('');
+    loadComments();
+    });
+
+    // Enter 키 입력 시 댓글 등록
+    $('#comment-input').on('keydown', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        $('#add-comment').click();
+    }
+    });
+
+    loadComments();
+    </script>
+
+
+</body>
+</html>
