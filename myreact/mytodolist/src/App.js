@@ -3,15 +3,12 @@ import "./App.css";
 import MyMap from "./component/MyMap";
 import Artist from "./component/Artist";
 import PhotoCard from "./component/PhotoCard";
+import MyToDoList from "./component/MyToDoList";
 
 function App() {
   return (
     <div className="App">
-      <MyMap></MyMap>
-      <br></br>
-      <Artist></Artist>
-      <br></br>
-      <PhotoCard></PhotoCard>
+      <MyToDoList></MyToDoList>
     </div>
   );
 }
