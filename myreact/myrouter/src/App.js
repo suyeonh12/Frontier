@@ -2,6 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Home from "./component/Home";
 import About from "./component/About";
+import Product from "./component/Product";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home></Home>}></Route>
         <Route path="/about" element={<About></About>}></Route>
+        <Route path="/product" element={<Product></Product>}></Route>
       </Routes>
     </div>
   );

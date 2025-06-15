@@ -21,6 +21,11 @@ const Home = () => {
       <Link to="/about">About컴포넌트띄우기2</Link>
       <br></br>
       <button onClick={chPage}>페이지 이동하기!!</button>
+
+      {/* 1,2,3번째 상품 상세보기 페이지로 갈 수 있는 Link */}
+      <Link to="/product?pronum=1">1번째 상품</Link>
+      <Link to="/product?pronum=2">2번째 상품</Link>
+      <Link to="/product?pronum=3">3번째 상품</Link>
     </div>
   );
 };
